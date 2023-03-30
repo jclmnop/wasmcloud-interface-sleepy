@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Interface for interacting with the sleepy capability provider."
 authors.workspace = true
 edition.workspace = true
+repository = "https://github.com/jclmnop/wasmcloud-interface-sleepy"
 license = "Apache-2.0"
 
 # when publishing to crates.io, freeze src by omitting build.rs
