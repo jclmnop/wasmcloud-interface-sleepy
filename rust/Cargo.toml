@@ -6,8 +6,8 @@ authors.workspace = true
 edition.workspace = true
 repository = "https://github.com/jclmnop/wasmcloud-interface-sleepy"
 license = "Apache-2.0"
-license-file = "LICENSE"
-readme = "README.md"
+license-file = "../LICENSE"
+readme = "../README.md"
 keywords = ["wasm", "date-and-time", "asynchronous"]
 
 # when publishing to crates.io, freeze src by omitting build.rs

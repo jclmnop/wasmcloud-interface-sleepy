@@ -58,6 +58,8 @@ pub trait Sleepy {
         ctx: &Context,
         arg: &Timestamp,
     ) -> RpcResult<()>;
+    /// Returns the current time as a `wasmbus_rpc::Timestamp` struct.
+    async fn now(&self, ctx: &Context) -> RpcResult<Timestamp>;
 }
 
 /// SleepyReceiver receives messages defined in the Sleepy service trait
@@ -88,6 +90,12 @@ pub trait SleepyReceiver: MessageDispatch + Sleepy {
 
                 let _resp = Sleepy::sleep_until(self, ctx, &value).await?;
                 let buf = Vec::new();
+                Ok(buf)
+            }
+            "Now" => {
+                let resp = Sleepy::now(self, ctx).await?;
+                let buf = wasmbus_rpc::common::serialize(&resp)?;
+
                 Ok(buf)
             }
             _ => Err(RpcError::MethodNotHandled(format!(
@@ -204,5 +212,25 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Sleepy
             )
             .await?;
         Ok(())
+    }
+    #[allow(unused)]
+    /// Returns the current time as a `wasmbus_rpc::Timestamp` struct.
+    async fn now(&self, ctx: &Context) -> RpcResult<Timestamp> {
+        let buf = *b"";
+        let resp = self
+            .transport
+            .send(
+                ctx,
+                Message {
+                    method: "Sleepy.Now",
+                    arg: Cow::Borrowed(&buf),
+                },
+                None,
+            )
+            .await?;
+
+        let value: Timestamp = wasmbus_rpc::common::deserialize(&resp)
+            .map_err(|e| RpcError::Deser(format!("'{}': Timestamp", e)))?;
+        Ok(value)
     }
 }

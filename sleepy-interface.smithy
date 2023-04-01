@@ -17,7 +17,7 @@ use org.wasmcloud.model#U32
 
 service Sleepy {
   version: "0.1",
-  operations: [ Sleep, SleepUntil ]
+  operations: [ Sleep, SleepUntil, Now ]
 }
 
 /// Sleep for a specified number of milliseconds
@@ -46,6 +46,11 @@ operation Sleep {
 ///  # }
 operation SleepUntil {
   input: Timestamp,
+}
+
+/// Returns the current time as a `wasmbus_rpc::Timestamp` struct.
+operation Now {
+  output: Timestamp,
 }
 
 
