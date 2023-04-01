@@ -1,11 +1,14 @@
 [package]
 name = "wasmcloud-interface-sleepy"
-version = "0.1.0"
+version = "0.1.1"
 description = "Interface for interacting with the sleepy capability provider."
 authors.workspace = true
 edition.workspace = true
 repository = "https://github.com/jclmnop/wasmcloud-interface-sleepy"
 license = "Apache-2.0"
+license-file = "LICENSE"
+readme = "README.md"
+keywords = ["wasm", "date-and-time", "asynchronous"]
 
 # when publishing to crates.io, freeze src by omitting build.rs
 exclude = [ "build.rs" ]
