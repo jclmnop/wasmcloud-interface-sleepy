@@ -22,13 +22,9 @@ service Sleepy {
 
 /// Sleep for a specified number of milliseconds
 /// ```ignore
-/// # use wasmcloud_interface_sleepy::SleepySender;
-/// # use wasmbus_rpc::actor::prelude::*;
-/// /// # async fn sleep_for_5_seconds(ctx: &Context) -> RpcResult<()> {
 ///   let sleepy = SleepySender::new();
 ///   // sleep for 5 seconds
 ///   sleepy.sleep(ctx, &5000).await?;
-/// # }
 operation Sleep {
   input: U32,
 }
@@ -36,28 +32,19 @@ operation Sleep {
 /// Sleep until a specified time, provided as a `wasmbus_rpc::Timestamp` struct.
 /// If the specified time is in the past, the operation will return immediately.
 /// ```ignore
-/// # use wasmcloud_interface_sleepy::SleepySender;
-/// # use wasmbus_rpc::actor::prelude::*;
-/// # use wasmbus_rpc::Timestamp;
-/// # async fn sleep_until_5_seconds(ctx: &Context) -> RpcResult<()> {
 ///  let sleepy = SleepySender::new();
 ///  let now = sleepy.now(ctx).await?;
 ///  let five_seconds = Timestamp::new(now.sec + 5, now.nsec);
 ///  // sleep until 5 seconds from now
 ///  sleepy.sleep_until(ctx, &five_seconds).await
-///  # }
 operation SleepUntil {
   input: Timestamp,
 }
 
 /// Returns the current time as a `wasmbus_rpc::Timestamp` struct.
 /// ```ignore
-/// # use wasmcloud_interface_sleepy::SleepySender;
-/// # use wasmbus_rpc::actor::prelude::*;
-/// # async fn get_current_time(ctx: &Context) -> RpcResult<()> {
 /// let sleepy = SleepySender::new();
 /// let now = sleepy.now(ctx).await?;
-/// # }
 operation Now {
   output: Timestamp,
 }
