@@ -33,25 +33,27 @@ pub trait Sleepy {
         "jclmnop:sleepy"
     }
     /// Sleep for a specified number of milliseconds
-    /// ```
+    /// ```ignore
     /// # use wasmcloud_interface_sleepy::SleepySender;
-    /// # async fn sleep_for_5_seconds() {
+    /// # use wasmbus_rpc::actor::prelude::*;
+    /// /// # async fn sleep_for_5_seconds(ctx: &Context) -> RpcResult<()> {
     /// let sleepy = SleepySender::new();
     /// // sleep for 5 seconds
-    /// sleepy.sleep(5000).await;
+    /// sleepy.sleep(ctx, &5000).await?;
     /// # }
     async fn sleep(&self, ctx: &Context, arg: &u32) -> RpcResult<()>;
     /// Sleep until a specified time, provided as a `wasmbus_rpc::Timestamp` struct.
     /// If the specified time is in the past, the operation will return immediately.
-    /// ```
+    /// ```ignore
     /// # use wasmcloud_interface_sleepy::SleepySender;
+    /// # use wasmbus_rpc::actor::prelude::*;
     /// # use wasmbus_rpc::Timestamp;
-    /// # async fn sleep_until_5_seconds() {
+    /// # async fn sleep_until_5_seconds(ctx: &Context) -> RpcResult<()> {
     /// let sleepy = SleepySender::new();
-    /// let now = Timestamp::now();
+    /// let now = sleepy.now(ctx).await?;
     /// let five_seconds = Timestamp::new(now.sec + 5, now.nsec);
     /// // sleep until 5 seconds from now
-    /// sleepy.sleep_until(five_seconds).await;
+    /// sleepy.sleep_until(ctx, &five_seconds).await
     /// # }
     async fn sleep_until(
         &self,
@@ -59,6 +61,13 @@ pub trait Sleepy {
         arg: &Timestamp,
     ) -> RpcResult<()>;
     /// Returns the current time as a `wasmbus_rpc::Timestamp` struct.
+    /// ```ignore
+    /// # use wasmcloud_interface_sleepy::SleepySender;
+    /// # use wasmbus_rpc::actor::prelude::*;
+    /// # async fn get_current_time(ctx: &Context) -> RpcResult<()> {
+    /// let sleepy = SleepySender::new();
+    /// let now = sleepy.now(ctx).await?;
+    /// # }
     async fn now(&self, ctx: &Context) -> RpcResult<Timestamp>;
 }
 
@@ -157,12 +166,13 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Sleepy
 {
     #[allow(unused)]
     /// Sleep for a specified number of milliseconds
-    /// ```
+    /// ```ignore
     /// # use wasmcloud_interface_sleepy::SleepySender;
-    /// # async fn sleep_for_5_seconds() {
+    /// # use wasmbus_rpc::actor::prelude::*;
+    /// /// # async fn sleep_for_5_seconds(ctx: &Context) -> RpcResult<()> {
     /// let sleepy = SleepySender::new();
     /// // sleep for 5 seconds
-    /// sleepy.sleep(5000).await;
+    /// sleepy.sleep(ctx, &5000).await?;
     /// # }
     async fn sleep(&self, ctx: &Context, arg: &u32) -> RpcResult<()> {
         let buf = wasmbus_rpc::common::serialize(arg)?;
@@ -183,15 +193,16 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Sleepy
     #[allow(unused)]
     /// Sleep until a specified time, provided as a `wasmbus_rpc::Timestamp` struct.
     /// If the specified time is in the past, the operation will return immediately.
-    /// ```
+    /// ```ignore
     /// # use wasmcloud_interface_sleepy::SleepySender;
+    /// # use wasmbus_rpc::actor::prelude::*;
     /// # use wasmbus_rpc::Timestamp;
-    /// # async fn sleep_until_5_seconds() {
+    /// # async fn sleep_until_5_seconds(ctx: &Context) -> RpcResult<()> {
     /// let sleepy = SleepySender::new();
-    /// let now = Timestamp::now();
+    /// let now = sleepy.now(ctx).await?;
     /// let five_seconds = Timestamp::new(now.sec + 5, now.nsec);
     /// // sleep until 5 seconds from now
-    /// sleepy.sleep_until(five_seconds).await;
+    /// sleepy.sleep_until(ctx, &five_seconds).await
     /// # }
     async fn sleep_until(
         &self,
@@ -215,6 +226,13 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Sleepy
     }
     #[allow(unused)]
     /// Returns the current time as a `wasmbus_rpc::Timestamp` struct.
+    /// ```ignore
+    /// # use wasmcloud_interface_sleepy::SleepySender;
+    /// # use wasmbus_rpc::actor::prelude::*;
+    /// # async fn get_current_time(ctx: &Context) -> RpcResult<()> {
+    /// let sleepy = SleepySender::new();
+    /// let now = sleepy.now(ctx).await?;
+    /// # }
     async fn now(&self, ctx: &Context) -> RpcResult<Timestamp> {
         let buf = *b"";
         let resp = self

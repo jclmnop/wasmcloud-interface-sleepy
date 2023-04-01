@@ -1,6 +1,6 @@
 [package]
 name = "wasmcloud-interface-sleepy"
-version = "0.1.1"
+version = "0.1.3"
 description = "Interface for interacting with the sleepy capability provider."
 authors.workspace = true
 edition.workspace = true
