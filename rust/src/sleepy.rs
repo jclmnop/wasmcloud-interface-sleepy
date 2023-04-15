@@ -12,8 +12,8 @@ use std::{borrow::Borrow, borrow::Cow, io::Write, string::ToString};
 use wasmbus_rpc::{
     cbor::*,
     common::{
-        deserialize, message_format, serialize, Context, Message,
-        MessageDispatch, MessageFormat, SendOpts, Transport,
+        deserialize, message_format, serialize, Context, Message, MessageDispatch, MessageFormat,
+        SendOpts, Transport,
     },
     error::{RpcError, RpcResult},
     Timestamp,
@@ -46,11 +46,7 @@ pub trait Sleepy {
     /// let five_seconds = Timestamp::new(now.sec + 5, now.nsec);
     /// // sleep until 5 seconds from now
     /// sleepy.sleep_until(ctx, &five_seconds).await
-    async fn sleep_until(
-        &self,
-        ctx: &Context,
-        arg: &Timestamp,
-    ) -> RpcResult<()>;
+    async fn sleep_until(&self, ctx: &Context, arg: &Timestamp) -> RpcResult<()>;
     /// Returns the current time as a `wasmbus_rpc::Timestamp` struct.
     /// ```ignore
     /// let sleepy = SleepySender::new();
@@ -64,11 +60,7 @@ pub trait Sleepy {
 #[doc(hidden)]
 #[async_trait]
 pub trait SleepyReceiver: MessageDispatch + Sleepy {
-    async fn dispatch(
-        &self,
-        ctx: &Context,
-        message: Message<'_>,
-    ) -> Result<Vec<u8>, RpcError> {
+    async fn dispatch(&self, ctx: &Context, message: Message<'_>) -> Result<Vec<u8>, RpcError> {
         match message.method {
             "Sleep" => {
                 let value: u32 = wasmbus_rpc::common::deserialize(&message.arg)
@@ -79,10 +71,8 @@ pub trait SleepyReceiver: MessageDispatch + Sleepy {
                 Ok(buf)
             }
             "SleepUntil" => {
-                let value: Timestamp = wasmbus_rpc::common::deserialize(
-                    &message.arg,
-                )
-                .map_err(|e| RpcError::Deser(format!("'Timestamp': {}", e)))?;
+                let value: Timestamp = wasmbus_rpc::common::deserialize(&message.arg)
+                    .map_err(|e| RpcError::Deser(format!("'Timestamp': {}", e)))?;
 
                 let _resp = Sleepy::sleep_until(self, ctx, &value).await?;
                 let buf = Vec::new();
@@ -127,30 +117,22 @@ impl SleepySender<wasmbus_rpc::actor::prelude::WasmHost> {
     /// Constructs a client for sending to a Sleepy provider
     /// implementing the 'jclmnop:sleepy' capability contract, with the "default" link
     pub fn new() -> Self {
-        let transport = wasmbus_rpc::actor::prelude::WasmHost::to_provider(
-            "jclmnop:sleepy",
-            "default",
-        )
-        .unwrap();
+        let transport =
+            wasmbus_rpc::actor::prelude::WasmHost::to_provider("jclmnop:sleepy", "default")
+                .unwrap();
         Self { transport }
     }
 
     /// Constructs a client for sending to a Sleepy provider
     /// implementing the 'jclmnop:sleepy' capability contract, with the specified link name
-    pub fn new_with_link(
-        link_name: &str,
-    ) -> wasmbus_rpc::error::RpcResult<Self> {
-        let transport = wasmbus_rpc::actor::prelude::WasmHost::to_provider(
-            "jclmnop:sleepy",
-            link_name,
-        )?;
+    pub fn new_with_link(link_name: &str) -> wasmbus_rpc::error::RpcResult<Self> {
+        let transport =
+            wasmbus_rpc::actor::prelude::WasmHost::to_provider("jclmnop:sleepy", link_name)?;
         Ok(Self { transport })
     }
 }
 #[async_trait]
-impl<T: Transport + std::marker::Sync + std::marker::Send> Sleepy
-    for SleepySender<T>
-{
+impl<T: Transport + std::marker::Sync + std::marker::Send> Sleepy for SleepySender<T> {
     #[allow(unused)]
     /// Sleep for a specified number of milliseconds
     /// ```ignore
@@ -182,11 +164,7 @@ impl<T: Transport + std::marker::Sync + std::marker::Send> Sleepy
     /// let five_seconds = Timestamp::new(now.sec + 5, now.nsec);
     /// // sleep until 5 seconds from now
     /// sleepy.sleep_until(ctx, &five_seconds).await
-    async fn sleep_until(
-        &self,
-        ctx: &Context,
-        arg: &Timestamp,
-    ) -> RpcResult<()> {
+    async fn sleep_until(&self, ctx: &Context, arg: &Timestamp) -> RpcResult<()> {
         let buf = wasmbus_rpc::common::serialize(arg)?;
 
         let resp = self

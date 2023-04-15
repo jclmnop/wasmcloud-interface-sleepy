@@ -1,6 +1,6 @@
 [package]
 name = "wasmcloud-interface-sleepy"
-version = "0.1.4"
+version = "0.1.5"
 description = "Interface for interacting with the sleepy capability provider."
 authors.workspace = true
 edition.workspace = true
@@ -19,7 +19,7 @@ crate-type = ["cdylib", "rlib"]
 async-trait.workspace = true
 serde.workspace = true
 serde_bytes = "0.11.5"
-wasmbus-rpc = "0.12.0"
+wasmbus-rpc = "0.13.0"
 
 # build-dependencies needed for build.rs
 [build-dependencies]

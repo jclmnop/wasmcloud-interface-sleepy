@@ -1,4 +1,4 @@
-// sleepy-interface.smithy
+// endpoint-enumerator-interface.smithy
 
 // Tell the code generator how to reference symbols defined in this namespace
 metadata package = [ { namespace: "jclmnop.provider.sleepy", crate: "wasmcloud-interface-sleepy" } ]
